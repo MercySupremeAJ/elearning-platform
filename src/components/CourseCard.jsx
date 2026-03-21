@@ -1,6 +1,5 @@
-import React from "react";
 import { useEnrollment } from "../store/EnrollmentContext.jsx";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom"; // for navigation
 
 const CourseCard = ({ course }) => {
   const { enrolledCourses, enrollCourse } = useEnrollment();
@@ -12,16 +11,24 @@ const CourseCard = ({ course }) => {
     <div style={{ border: "1px solid #ccc", margin: "1rem 0", padding: "1rem" }}>
       <h3>{course.title}</h3>
       <p>{course.description}</p>
+
+      {/* Enroll button */}
       <button
-        onClick={() => {
-          enrollCourse(course);
-          // 🔹 Navigate to lessons after enrolling
-          navigate(`/courses/${course.id}/lessons`);
-        }}
-        disabled={isEnrolled} // Disable button if already enrolled
+        onClick={() => enrollCourse(course)}
+        disabled={isEnrolled}
       >
-        {isEnrolled ? "Enrolled" : "Enroll & Go to Lessons"}
+        {isEnrolled ? "Enrolled" : "Enroll"}
       </button>
+
+      {/* Go to Lesson button */}
+      {isEnrolled && (
+        <button
+          style={{ marginLeft: "1rem" }}
+          onClick={() => navigate(`/lesson/${course.id}`)}
+        >
+          Go to Lesson
+        </button>
+      )}
     </div>
   );
 };
