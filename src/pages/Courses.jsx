@@ -1,4 +1,5 @@
 import courses from "../data/courses";
+import CourseCard from "../components/CourseCard";
 
 const Courses = () => {
   return (
@@ -6,11 +7,7 @@ const Courses = () => {
       <h2>Available Courses</h2>
 
       {courses.map((course) => (
-        <div key={course.id} style={{ border: "1px solid #ccc", margin: "1rem 0", padding: "1rem" }}>
-          <h3>{course.title}</h3>
-          <p>{course.description}</p>
-          <button>Enroll</button>
-        </div>
+        <CourseCard key={course.id} course={course} />
       ))}
     </div>
   );
