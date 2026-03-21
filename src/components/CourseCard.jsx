@@ -1,11 +1,13 @@
-// Import the custom hook for handling enrollment logic
-import { useCourses } from "../hooks/useCourses";
+// Import React
+import React from "react";
+// Import the enrollment context to manage global course enrollment
+import { useEnrollment } from "../store/EnrollmentContext.jsx";
 
 const CourseCard = ({ course }) => {
-  // Get enrolled courses list and enroll function from custom hook
-  const { enrolledCourses, enroll } = useCourses();
+  // Destructure enrolledCourses and enrollCourse function from context
+  const { enrolledCourses, enrollCourse } = useEnrollment();
 
-  // Check if this course is already enrolled
+  // Check if this course has already been enrolled by the user
   const isEnrolled = enrolledCourses.find((c) => c.id === course.id);
 
   return (
@@ -18,14 +20,15 @@ const CourseCard = ({ course }) => {
       {/* Course description */}
       <p>{course.description}</p>
 
-      {/* Course category (new improvement) */}
+      {/* Course category */}
       <p><strong>Category:</strong> {course.category}</p>
 
       {/* Enroll button */}
       <button 
-        onClick={() => enroll(course)} // When clicked, enroll user in course
+        onClick={() => enrollCourse(course)} // Enroll user when clicked
+        disabled={isEnrolled} // Disable button if already enrolled
       >
-        {/* If already enrolled, show "Enrolled", else show "Enroll" */}
+        {/* Show "Enrolled" if already enrolled, else show "Enroll" */}
         {isEnrolled ? "Enrolled" : "Enroll"}
       </button>
     </div>
