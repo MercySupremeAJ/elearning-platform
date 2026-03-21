@@ -1,16 +1,17 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
-import Login from './pages/Login.jsx';
-import Courses from './pages/Courses.jsx';
-import ProtectedRoute from './components/ProtectedRoute.jsx';
+import { Routes, Route } from "react-router-dom";
+import Login from "./pages/Login.jsx";
+import Courses from "./pages/Courses.jsx";
+import LessonPlayer from "./components/LessonPlayer.jsx";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
+// Main App component
 function App() {
   return (
     <Routes>
-      {/* Redirect root to login */}
-      <Route path="/" element={<Navigate to="/login" />} />
-
+      {/* Login page route */}
       <Route path="/login" element={<Login />} />
 
+      {/* Courses page route (protected, user must be logged in) */}
       <Route
         path="/courses"
         element={
@@ -19,6 +20,19 @@ function App() {
           </ProtectedRoute>
         }
       />
+
+      {/* Lesson Player route for each course */}
+      <Route
+        path="/courses/:courseId/lessons"
+        element={
+          <ProtectedRoute>
+            <LessonPlayer />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Default/fallback route redirects to login */}
+      <Route path="*" element={<Login />} />
     </Routes>
   );
 }
