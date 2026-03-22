@@ -1,22 +1,16 @@
-// Import course data
-import courses from "../data/courses";
-
-// Import CourseCard component
-import CourseCard from "../components/CourseCard";
-
-// Import navigation hook
-import { useNavigate } from "react-router-dom";
+// Courses.jsx
+import courses from "../data/courses"; // Course data
+import CourseCard from "../components/CourseCard"; // Course card component
+import { useNavigate } from "react-router-dom"; // Navigation hook
 
 const Courses = () => {
-  // ✅ Hook MUST be inside component
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // ✅ Must be inside component
 
-  // 🔹 Step 1: Group courses by category
+  // 🔹 Group courses by category for display
   const groupedCourses = courses.reduce((acc, course) => {
     if (!acc[course.category]) {
       acc[course.category] = [];
     }
-
     acc[course.category].push(course);
     return acc;
   }, {});
@@ -26,20 +20,20 @@ const Courses = () => {
       <h2>Available Courses</h2>
 
       {/* 🔹 Dashboard Button */}
-      <button onClick={() => navigate("/dashboard")}>
+      <button
+        onClick={() => navigate("/dashboard")}
+        style={{ padding: "0.5rem 1rem", marginBottom: "1.5rem", cursor: "pointer" }}
+      >
         Go to Dashboard
       </button>
 
-      {/* 🔹 Step 2: Loop through categories */}
+      {/* 🔹 Loop through each category */}
       {Object.keys(groupedCourses).map((category) => (
         <div key={category}>
-          
-          {/* Category Title */}
-          <h3 style={{ marginTop: "2rem", color: "blue" }}>
-            {category}
-          </h3>
+          {/* Category title */}
+          <h3 style={{ marginTop: "2rem", color: "blue" }}>{category}</h3>
 
-          {/* 🔹 Step 3: Render courses */}
+          {/* 🔹 Render all courses in this category */}
           {groupedCourses[category].map((course) => (
             <CourseCard key={course.id} course={course} />
           ))}
