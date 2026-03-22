@@ -4,6 +4,7 @@ import Courses from "./pages/Courses.jsx";
 import LessonPlayer from "./components/LessonPlayer.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
+import MyCourses from "./pages/MyCourses.jsx";
 
 
 // Main App component
@@ -42,6 +43,16 @@ function App() {
         element={
           <ProtectedRoute>
             <Dashboard />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* My Courses page (protected) */}
+      <Route
+        path="/my-courses"
+        element={
+          <ProtectedRoute>
+            <MyCourses />
           </ProtectedRoute>
         }
       />
