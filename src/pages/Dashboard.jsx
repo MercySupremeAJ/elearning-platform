@@ -1,6 +1,7 @@
 // Import enrollment context
 import { useEnrollment } from "../store/EnrollmentContext.jsx";
 import { useNavigate } from "react-router-dom";
+import lessonsData from "../data/lessons";
 
 const Dashboard = () => {
   const { enrolledCourses, progress } = useEnrollment();
@@ -18,8 +19,8 @@ const Dashboard = () => {
         // Get completed lessons for this course
         const completed = progress[course.id] || [];
 
-        // Example total lessons (we'll improve later)
-        const totalLessons = 3;
+        // total lessons
+        const totalLessons = (lessonsData[course.id] || []).length;
 
         // Calculate progress %
         const percent = Math.round((completed.length / totalLessons) * 100);
