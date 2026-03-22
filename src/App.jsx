@@ -3,6 +3,8 @@ import Login from "./pages/Login.jsx";
 import Courses from "./pages/Courses.jsx";
 import LessonPlayer from "./components/LessonPlayer.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import Dashboard from "./pages/Dashboard.jsx";
+
 
 // Main App component
 function App() {
@@ -30,6 +32,16 @@ function App() {
         element={
           <ProtectedRoute>
             <LessonPlayer />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Dashboard page (protected) */}
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <Dashboard />
           </ProtectedRoute>
         }
       />
