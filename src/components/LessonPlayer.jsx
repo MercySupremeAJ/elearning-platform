@@ -51,6 +51,7 @@ const LessonPlayer = () => {
         <div className="video-container">
           {currentLesson ? (
             <iframe
+              key={currentLesson.id}
               src={currentLesson.videoUrl}
               title={currentLesson.title}
               frameBorder="0"
