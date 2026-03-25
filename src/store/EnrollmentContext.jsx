@@ -1,50 +1,58 @@
-// EnrollmentContext.jsx
 import { createContext, useState, useContext } from "react";
+import { useAuth } from "../hooks/useAuth";
 
-// 🔹 Create Enrollment Context
 const EnrollmentContext = createContext();
 
-// 🔹 Provider to wrap the app
 export const EnrollmentProvider = ({ children }) => {
-  // State to keep track of enrolled courses
-  const [enrolledCourses, setEnrolledCourses] = useState([]);
+  const { user } = useAuth();
 
-  // 🔹 New state: track completed lessons per course
-  // Structure: { [courseId]: [lessonId1, lessonId2, ...] }
-  const [progress, setProgress] = useState({});
+  const [enrolledCourses, setEnrolledCourses] = useState(() => {
+    return JSON.parse(localStorage.getItem("courses")) || [];
+  });
 
-  // 🔹 Function to enroll in a course
+  const [progress, setProgress] = useState(() => {
+    return JSON.parse(localStorage.getItem("progress")) || {};
+  });
+
   const enrollCourse = (course) => {
     setEnrolledCourses((prev) => {
       if (prev.find((c) => c.id === course.id)) return prev;
-      return [...prev, course];
+
+      const updated = [...prev, course];
+      localStorage.setItem("courses", JSON.stringify(updated));
+      return updated;
     });
   };
 
-  // 🔹 Function to unenroll from a course
   const unenrollCourse = (courseId) => {
-    setEnrolledCourses((prev) => prev.filter((c) => c.id !== courseId));
-
-    // Remove progress when unenrolling
-    setProgress((prev) => {
-      const newProgress = { ...prev };
-      delete newProgress[courseId];
-      return newProgress;
+    setEnrolledCourses((prev) => {
+      const updated = prev.filter((c) => c.id !== courseId);
+      localStorage.setItem("courses", JSON.stringify(updated));
+      return updated;
     });
   };
 
-  // 🔹 Function to toggle lesson completion
   const toggleLessonComplete = (courseId, lessonId) => {
-    setProgress((prev) => {
-      const courseProgress = prev[courseId] || [];
-      const isCompleted = courseProgress.includes(lessonId);
+    if (!user) return;
 
-      return {
+    setProgress((prev) => {
+      const userProgress = prev[user.username] || {};
+      const courseProgress = userProgress[courseId] || [];
+
+      const updatedCourse = courseProgress.includes(lessonId)
+        ? courseProgress.filter((id) => id !== lessonId)
+        : [...courseProgress, lessonId];
+
+      const updated = {
         ...prev,
-        [courseId]: isCompleted
-          ? courseProgress.filter((id) => id !== lessonId) // uncheck
-          : [...courseProgress, lessonId], // check
+        [user.username]: {
+          ...userProgress,
+          [courseId]: updatedCourse,
+        },
       };
+
+      localStorage.setItem("progress", JSON.stringify(updated));
+      return updated;
     });
   };
 
@@ -55,7 +63,7 @@ export const EnrollmentProvider = ({ children }) => {
         enrollCourse,
         unenrollCourse,
         progress,
-        toggleLessonComplete, // expose to LessonPlayer
+        toggleLessonComplete,
       }}
     >
       {children}
@@ -63,5 +71,4 @@ export const EnrollmentProvider = ({ children }) => {
   );
 };
 
-// 🔹 Custom hook to use the enrollment context
 export const useEnrollment = () => useContext(EnrollmentContext);

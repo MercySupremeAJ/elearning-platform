@@ -1,22 +1,22 @@
-import { createContext, useState } from "react";
+// src/store/AuthContext.jsx
+import { createContext, useState, useContext } from "react";
 
-// Create AuthContext
-export const AuthContext = createContext();
+const AuthContext = createContext();
 
-// AuthProvider to wrap your app
 export const AuthProvider = ({ children }) => {
-  // State to track if user is logged in
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    return JSON.parse(localStorage.getItem("user")) || null;
+  });
 
-  // Login function
-  const login = (username) => {
-    // Simple demo login (replace with real API later)
-    setUser({ name: username });
+  const login = (username, email) => {
+    const newUser = { username, email };
+    setUser(newUser);
+    localStorage.setItem("user", JSON.stringify(newUser));
   };
 
-  // Logout function
   const logout = () => {
     setUser(null);
+    localStorage.removeItem("user");
   };
 
   return (
@@ -25,3 +25,5 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
+
+export const useAuth = () => useContext(AuthContext);
