@@ -1,35 +1,39 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
 
-const Login = () => {
+const Signup = () => {
   const navigate = useNavigate();
-  const { login } = useAuth();
 
   const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
 
-  const handleLogin = (e) => {
+  const handleSignup = (e) => {
     e.preventDefault();
 
-    if (!username) return;
-
-    // ✅ Save user
-    login({ username });
-
-    // ✅ Go to dashboard
-    navigate("/dashboard");
+    // For now just redirect to login
+    navigate("/login");
   };
 
   return (
     <div style={{ padding: "2rem", textAlign: "center" }}>
-      <h2>Login</h2>
+      <h2>Sign Up</h2>
 
-      <form onSubmit={handleLogin}>
+      <form onSubmit={handleSignup}>
         <input
           type="text"
-          placeholder="Enter username"
+          placeholder="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          style={{ padding: "0.5rem", marginBottom: "1rem" }}
+        />
+
+        <br />
+
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           style={{ padding: "0.5rem", marginBottom: "1rem" }}
         />
 
@@ -39,27 +43,26 @@ const Login = () => {
           type="submit"
           style={{
             padding: "0.5rem 1rem",
-            background: "#2196f3",
+            background: "#4caf50",
             color: "#fff",
             border: "none",
           }}
         >
-          Login
+          Create Account
         </button>
       </form>
 
-      {/* 🔹 Go to signup */}
       <p style={{ marginTop: "1rem" }}>
-        Don't have an account?{" "}
+        Already have an account?{" "}
         <span
           style={{ color: "blue", cursor: "pointer" }}
-          onClick={() => navigate("/signup")}
+          onClick={() => navigate("/login")}
         >
-          Sign up
+          Login
         </span>
       </p>
     </div>
   );
 };
 
-export default Login;
+export default Signup;

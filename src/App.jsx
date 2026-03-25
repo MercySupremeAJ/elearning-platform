@@ -1,43 +1,25 @@
 import { Routes, Route, Navigate } from "react-router-dom";
+
+import LandingPage from "./pages/LandingPage.jsx";
 import Login from "./pages/Login.jsx";
+import Signup from "./pages/Signup.jsx";
+
 import Courses from "./pages/Courses.jsx";
 import LessonPlayer from "./components/LessonPlayer.jsx";
-import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import MyCourses from "./pages/MyCourses.jsx";
 
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
-// Main App component
 function App() {
   return (
     <Routes>
-      {/* Root route redirects to login page */}
-      <Route path="/" element={<Navigate to="/login" />} />
-
-      {/* Login page route */}
+      {/* ✅ PUBLIC */}
+      <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
 
-      {/* Courses page (protected, user must be logged in) */}
-      <Route
-        path="/courses"
-        element={
-          <ProtectedRoute>
-            <Courses />
-          </ProtectedRoute>
-        }
-      />
-
-      {/* Lesson player for each course (protected) */}
-      <Route
-        path="/lesson/:courseId"
-        element={
-          <ProtectedRoute>
-            <LessonPlayer />
-          </ProtectedRoute>
-        }
-      />
-
-      {/* Dashboard page (protected) */}
+      {/* ✅ PROTECTED */}
       <Route
         path="/dashboard"
         element={
@@ -47,7 +29,24 @@ function App() {
         }
       />
 
-      {/* My Courses page (protected) */}
+      <Route
+        path="/courses"
+        element={
+          <ProtectedRoute>
+            <Courses />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/lesson/:courseId"
+        element={
+          <ProtectedRoute>
+            <LessonPlayer />
+          </ProtectedRoute>
+        }
+      />
+
       <Route
         path="/my-courses"
         element={
@@ -57,8 +56,8 @@ function App() {
         }
       />
 
-      {/* Fallback route redirects to login */}
-      <Route path="*" element={<Navigate to="/login" />} />
+      {/* ✅ FALLBACK */}
+      <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
 }
