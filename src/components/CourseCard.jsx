@@ -1,15 +1,17 @@
 import { useEnrollment } from "../store/EnrollmentContext.jsx";
+import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import lessonsData from "../data/lessons"; 
 
 const CourseCard = ({ course }) => {
   const { enrolledCourses, enrollCourse, progress } = useEnrollment();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   const isEnrolled = enrolledCourses.find((c) => c.id === course.id);
 
   const totalLessons = lessonsData[course.id]?.length || 0;
-  const completedLessons = progress[course.id]?.length || 0;
+  const completedLessons = progress[user?.username]?.[course.id]?.length || 0;
   const miniProgress = totalLessons ? Math.round((completedLessons / totalLessons) * 100) : 0;
 
   let progressClass = "low";

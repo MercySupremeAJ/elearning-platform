@@ -2,26 +2,26 @@
 // Each course has its own lessons starting from id: 1
 // Every lesson includes a unique renowned programming video embed link mapped to its course topic.
 
-const vid1 = "https://www.youtube.com/embed/mU6anWqZJcc"; // HTML/CSS
-const vid2 = "https://www.youtube.com/embed/jS4aFq5-91M"; // JS
-const vid3 = "https://www.youtube.com/embed/bMknfKXIFA8"; // React
-const vid4 = "https://www.youtube.com/embed/w7ejDZ8SWv8"; // Adv React
-const vid5 = "https://www.youtube.com/embed/LHBE6Q9XlzI"; // Python DS
-const vid6 = "https://www.youtube.com/embed/vmEHCJofslg"; // Pandas
-const vid7 = "https://www.youtube.com/embed/a9UrKTVEeZA"; // Data Vis
-const vid8 = "https://www.youtube.com/embed/xxpc-HPKN28"; // Stats
-const vid9 = "https://www.youtube.com/embed/GwIoAwYg3Wc"; // ML
-const vid10 = "https://www.youtube.com/embed/aircAruvnKk"; // Deep Learning
-const vid11 = "https://www.youtube.com/embed/OczADqNyVXE"; // CV
-const vid12 = "https://www.youtube.com/embed/fNxaJsNG3-s"; // NLP
-const vid13 = "https://www.youtube.com/embed/fNk_zzaMoSs"; // Eng Math
-const vid14 = "https://www.youtube.com/embed/s2K1JfNR7Sc"; // Signal
-const vid15 = "https://www.youtube.com/embed/Pi7l8mMjYVE"; // Control Systems
-const vid16 = "https://www.youtube.com/embed/RY_vEn6N0D4"; // Embedded
-const vid17 = "https://www.youtube.com/embed/zOjov-2c0iU"; // Intro Prog
-const vid18 = "https://www.youtube.com/embed/pTB0EiLXUC8"; // OOP
-const vid19 = "https://www.youtube.com/embed/8hly31xKli0"; // DSA
-const vid20 = "https://www.youtube.com/embed/RGOj5yH7evk"; // Git
+const vid1 = "https://www.youtube.com/embed/G3e-cpL7ofc"; // HTML/CSS (SuperSimpleDev)
+const vid2 = "https://www.youtube.com/embed/W6NZfCO5SIk"; // JS (Programming with Mosh)
+const vid3 = "https://www.youtube.com/embed/SqcY0GlETPk"; // React (Programming with Mosh)
+const vid4 = "https://www.youtube.com/embed/LlvBzyy-558"; // Adv React (Web Dev Simplified)
+const vid5 = "https://www.youtube.com/embed/_uQrJ0TkZlc"; // Python DS (Programming with Mosh)
+const vid6 = "https://www.youtube.com/embed/ZyhVh-qRZPA"; // Pandas (Corey Schafer)
+const vid7 = "https://www.youtube.com/embed/UO98lJQ3QGI"; // Data Vis (Corey Schafer)
+const vid8 = "https://www.youtube.com/embed/v_ikGpswAps"; // Stats (FreeCodeCamp)
+const vid9 = "https://www.youtube.com/embed/7eh4d6sabA0"; // ML (Programming with Mosh)
+const vid10 = "https://www.youtube.com/embed/qFJeN9V1ZsI"; // Deep Learning (FreeCodeCamp)
+const vid11 = "https://www.youtube.com/embed/oXlwWbU8l2o"; // CV (FreeCodeCamp)
+const vid12 = "https://www.youtube.com/embed/VyVEj2sA1qQ"; // NLP (Edureka)
+const vid13 = "https://www.youtube.com/embed/T647CGsuOVY"; // Eng Math (FreeCodeCamp)
+const vid14 = "https://www.youtube.com/embed/-Y7PLaxEXS0"; // Signal (Ira Fulton)
+const vid15 = "https://www.youtube.com/embed/sIbbIe2p1kU"; // Control Systems (FreeCodeCamp)
+const vid16 = "https://www.youtube.com/embed/m7wB4d9X7OQ"; // Embedded (Udemy)
+const vid17 = "https://www.youtube.com/embed/zOjov-2c0iU"; // Intro Prog (CS50)
+const vid18 = "https://www.youtube.com/embed/pTB0EiLXUC8"; // OOP (Programming with Mosh)
+const vid19 = "https://www.youtube.com/embed/8hly31xKli0"; // DSA (FreeCodeCamp)
+const vid20 = "https://www.youtube.com/embed/8JJ101D3knE"; // Git (Programming with Mosh)
 
 const lessons = {
   // 🔸 1. HTML & CSS Fundamentals (Web Development)

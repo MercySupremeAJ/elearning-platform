@@ -60,6 +60,12 @@ const LessonPlayer = () => {
                 rel="noopener noreferrer"
                 className="btn btn-primary"
                 style={{ fontSize: "1.5rem", padding: "1.5rem 3rem", display: 'flex', alignItems: 'center', gap: '1rem', boxShadow: '0 10px 25px rgba(59, 130, 246, 0.5)' }}
+                onClick={() => {
+                  // Auto mark complete when they launch the video
+                  if (!isCurrentLessonCompleted) {
+                    toggleComplete(currentLesson.id);
+                  }
+                }}
               >
                 <span style={{ fontSize: '2rem' }}>📺</span> Watch on YouTube
               </a>
@@ -117,7 +123,10 @@ const LessonPlayer = () => {
                 style={{ textDecoration: 'none', display: 'flex', color: 'inherit' }}
                 onClick={(e) => {
                   setCurrentLesson(lesson);
-                  // Link will naturally open YouTube in a new tab due to target="_blank"
+                  // Auto-mark complete when they click the subcourse
+                  if (!isCompleted) {
+                    toggleLessonComplete(Number(courseId), lesson.id);
+                  }
                 }}
               >
                 <div className="lesson-status">
