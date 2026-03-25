@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 
 const Signup = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -10,57 +12,57 @@ const Signup = () => {
   const handleSignup = (e) => {
     e.preventDefault();
 
-    // For now just redirect to login
-    navigate("/login");
+    if (!username || !email) return;
+
+    login(username, email);
+    navigate("/dashboard");
   };
 
   return (
-    <div style={{ padding: "2rem", textAlign: "center" }}>
-      <h2>Sign Up</h2>
+    <div className="auth-wrapper">
+      <div className="auth-box glass-panel">
+        <h2 className="mb-1">Create an Account</h2>
+        <p className="text-dim mb-2">Join us and start learning today.</p>
 
-      <form onSubmit={handleSignup}>
-        <input
-          type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          style={{ padding: "0.5rem", marginBottom: "1rem" }}
-        />
+        <form onSubmit={handleSignup}>
+          <div className="form-group">
+            <label htmlFor="username">Username</label>
+            <input
+              id="username"
+              type="text"
+              className="form-input"
+              placeholder="Choose a username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </div>
 
-        <br />
+          <div className="form-group">
+            <label htmlFor="email">Email address</label>
+            <input
+              id="email"
+              type="email"
+              className="form-input"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
 
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          style={{ padding: "0.5rem", marginBottom: "1rem" }}
-        />
+          <button type="submit" className="btn btn-primary" style={{ width: "100%", marginTop: "1rem" }}>
+            Sign Up
+          </button>
+        </form>
 
-        <br />
-
-        <button
-          type="submit"
-          style={{
-            padding: "0.5rem 1rem",
-            background: "#4caf50",
-            color: "#fff",
-            border: "none",
-          }}
-        >
-          Create Account
-        </button>
-      </form>
-
-      <p style={{ marginTop: "1rem" }}>
-        Already have an account?{" "}
-        <span
-          style={{ color: "blue", cursor: "pointer" }}
-          onClick={() => navigate("/login")}
-        >
-          Login
-        </span>
-      </p>
+        <p className="mt-2 text-dim">
+          Already have an account?{" "}
+          <span className="auth-link" onClick={() => navigate("/login")}>
+            Log in
+          </span>
+        </p>
+      </div>
     </div>
   );
 };

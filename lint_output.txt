@@ -1,0 +1,13 @@
+
+> elearning-platform@0.0.0 lint
+> eslint .
+
+
+C:\Users\Desup\OneDrive\Documents\MERCY JAVASCRIPT\elearning-platform\src\store\AuthContext.jsx
+  29:14  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\Desup\OneDrive\Documents\MERCY JAVASCRIPT\elearning-platform\src\store\EnrollmentContext.jsx
+  74:14  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+Γ£û 2 problems (2 errors, 0 warnings)
+

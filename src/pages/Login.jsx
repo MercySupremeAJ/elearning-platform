@@ -5,59 +5,48 @@ import { useAuth } from "../hooks/useAuth";
 const Login = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
-
   const [username, setUsername] = useState("");
 
   const handleLogin = (e) => {
     e.preventDefault();
-
     if (!username) return;
 
-    // ✅ Save user
     login({ username });
-
-    // ✅ Go to dashboard
     navigate("/dashboard");
   };
 
   return (
-    <div style={{ padding: "2rem", textAlign: "center" }}>
-      <h2>Login</h2>
+    <div className="auth-wrapper">
+      <div className="auth-box glass-panel">
+        <h2 className="mb-1">Welcome Back</h2>
+        <p className="text-dim mb-2">Sign in to continue your learning journey.</p>
 
-      <form onSubmit={handleLogin}>
-        <input
-          type="text"
-          placeholder="Enter username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          style={{ padding: "0.5rem", marginBottom: "1rem" }}
-        />
+        <form onSubmit={handleLogin}>
+          <div className="form-group">
+            <label htmlFor="username">Username</label>
+            <input
+              id="username"
+              type="text"
+              className="form-input"
+              placeholder="Enter your username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </div>
 
-        <br />
+          <button type="submit" className="btn btn-primary" style={{ width: "100%", marginTop: "1rem" }}>
+            Login
+          </button>
+        </form>
 
-        <button
-          type="submit"
-          style={{
-            padding: "0.5rem 1rem",
-            background: "#2196f3",
-            color: "#fff",
-            border: "none",
-          }}
-        >
-          Login
-        </button>
-      </form>
-
-      {/* 🔹 Go to signup */}
-      <p style={{ marginTop: "1rem" }}>
-        Don't have an account?{" "}
-        <span
-          style={{ color: "blue", cursor: "pointer" }}
-          onClick={() => navigate("/signup")}
-        >
-          Sign up
-        </span>
-      </p>
+        <p className="mt-2 text-dim">
+          Don't have an account?{" "}
+          <span className="auth-link" onClick={() => navigate("/signup")}>
+            Sign up
+          </span>
+        </p>
+      </div>
     </div>
   );
 };

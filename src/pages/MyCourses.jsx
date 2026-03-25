@@ -1,78 +1,37 @@
 import { useEnrollment } from "../store/EnrollmentContext.jsx";
+import CourseCard from "../components/CourseCard.jsx";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth"; // ✅ ADD
-import lessonsData from "../data/lessons";
 
 const MyCourses = () => {
-  const { enrolledCourses, progress, unenrollCourse } = useEnrollment();
-  const { user } = useAuth(); // ✅ CURRENT USER
+  const { enrolledCourses } = useEnrollment();
   const navigate = useNavigate();
 
-  const getLessonCount = (courseId) =>
-    lessonsData[courseId]?.length || 0;
-
-  const getProgressColor = (percentage) => {
-    if (percentage >= 75) return "#4caf50";
-    if (percentage >= 40) return "#ff9800";
-    return "#f44336";
-  };
-
   return (
-    <div style={{ padding: "2rem", fontFamily: "Arial" }}>
-      <h2>My Courses</h2>
+    <div className="container">
+      <header className="nav-header" style={{ marginTop: "2rem" }}>
+        <div>
+          <h1 style={{ margin: 0 }}>My Active Courses</h1>
+          <p className="text-dim mt-1">Pick up right where you left off.</p>
+        </div>
+        <button className="btn btn-outline" onClick={() => navigate("/dashboard")}>
+          &larr; Back to Dashboard
+        </button>
+      </header>
 
       {enrolledCourses.length === 0 ? (
-        <p>No courses yet.</p>
+        <div className="glass-panel text-center" style={{ marginTop: "4rem", padding: "4rem 2rem" }}>
+          <h2 style={{ fontSize: "2rem" }}>You are not enrolled in any courses yet.</h2>
+          <p className="text-dim mb-2 mt-1" style={{ fontSize: "1.2rem" }}>Explore our catalog to start learning.</p>
+          <button className="btn btn-primary" onClick={() => navigate("/courses")} style={{ fontSize: "1.1rem", padding: "1rem 2rem" }}>
+            Browse Catalog
+          </button>
+        </div>
       ) : (
-        enrolledCourses.map((course) => {
-          const totalLessons = getLessonCount(course.id);
-
-          // ✅ FIXED
-          const completedLessons =
-            progress[user?.username]?.[course.id]?.length || 0;
-
-          const progressPercentage = totalLessons
-            ? Math.round((completedLessons / totalLessons) * 100)
-            : 0;
-
-          const barColor = getProgressColor(progressPercentage);
-
-          return (
-            <div
-              key={course.id}
-              style={{
-                padding: "1rem",
-                margin: "1rem 0",
-                borderRadius: "10px",
-                background: "#fff",
-                boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
-              }}
-            >
-              <h3>{course.title}</h3>
-
-              {/* Progress Bar */}
-              <div style={{ background: "#eee", height: "10px" }}>
-                <div
-                  style={{
-                    width: `${progressPercentage}%`,
-                    background: barColor,
-                    height: "100%",
-                  }}
-                />
-              </div>
-
-              <p>{progressPercentage}% Complete</p>
-
-              <button onClick={() => navigate(`/lesson/${course.id}`)}>
-                Continue
-              </button>
-
-              <button onClick={() => unenrollCourse(course.id)}>
-                Unenroll
-              </button>
-            </div>
-          );
-        })
+        <div className="course-grid" style={{ marginTop: "2rem" }}>
+          {enrolledCourses.map((course) => (
+            <CourseCard key={course.id} course={course} />
+          ))}
+        </div>
       )}
     </div>
   );

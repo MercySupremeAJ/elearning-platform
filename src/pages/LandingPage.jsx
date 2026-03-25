@@ -1,155 +1,56 @@
-// src/pages/LandingPage.jsx
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { useAuth } from "../hooks/useAuth";
-import courses from "../data/courses";
 
 const LandingPage = () => {
   const navigate = useNavigate();
-  const { login, user, logout } = useAuth();
-
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-
-  const handleLogin = (e) => {
-    e.preventDefault();
-    if (!username || !email) {
-      alert("Please enter both username and email");
-      return;
-    }
-
-    // Simple email regex check
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      alert("Please enter a valid email address");
-      return;
-    }
-
-    login(username, email);
-    navigate("/dashboard");
-  };
-
-  const previewCourses = courses.slice(0, 4);
 
   return (
-    <div style={{ fontFamily: "Arial, sans-serif" }}>
-      {/* HERO */}
-      <div
-        style={{
-          height: "70vh",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          background: "linear-gradient(135deg, #2196f3, #21cbf3)",
-          color: "#fff",
-          textAlign: "center",
-        }}
-      >
-        <h1 style={{ fontSize: "3rem" }}>AJScademy</h1>
-        <p>Learn. Track. Grow.</p>
+    <div className="container" style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+      <header className="nav-header" style={{ marginTop: "2rem" }}>
+        <div className="nav-brand">Supremium Learning</div>
+        <div className="nav-actions">
+          <button className="btn btn-outline" onClick={() => navigate("/login")}>
+            Log In
+          </button>
+          <button className="btn btn-primary" onClick={() => navigate("/signup")}>
+            Sign Up
+          </button>
+        </div>
+      </header>
 
-        {/* LOGIN FORM */}
-        {!user ? (
-          <form onSubmit={handleLogin} style={{ marginTop: "1rem" }}>
-            <input
-              type="text"
-              placeholder="Enter your name"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              style={{
-                padding: "0.7rem",
-                borderRadius: "5px",
-                border: "none",
-                marginRight: "0.5rem",
-              }}
-              required
-            />
-            <input
-              type="email"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              style={{
-                padding: "0.7rem",
-                borderRadius: "5px",
-                border: "none",
-                marginRight: "0.5rem",
-              }}
-              required
-            />
+      <main className="hero">
+        <h1>Master the Future<br />of Technology.</h1>
+        <p>
+          World-class education for ambitious minds. 
+          Learn from industry experts with our meticulously crafted, interactive curriculum.
+        </p>
+        
+        <div className="hero-actions">
+          <button className="btn btn-primary" onClick={() => navigate("/signup")} style={{ fontSize: "1.1rem", padding: "1rem 2rem" }}>
+            Start Learning for Free
+          </button>
+          <button className="btn btn-outline" onClick={() => navigate("/courses")} style={{ fontSize: "1.1rem", padding: "1rem 2rem" }}>
+            Browse Courses
+          </button>
+        </div>
 
-            <button
-              type="submit"
-              style={{
-                padding: "0.7rem 1.5rem",
-                background: "#fff",
-                color: "#2196f3",
-                border: "none",
-                borderRadius: "5px",
-                cursor: "pointer",
-                fontWeight: "bold",
-              }}
-            >
-              Get Started
-            </button>
-          </form>
-        ) : (
-          <div style={{ marginTop: "1rem" }}>
-            <p>Welcome back, {user.username}!</p>
-            <button
-              onClick={() => logout()}
-              style={{
-                padding: "0.5rem 1rem",
-                background: "#f44336",
-                border: "none",
-                borderRadius: "5px",
-                color: "#fff",
-                cursor: "pointer",
-                marginTop: "0.5rem",
-              }}
-            >
-              Logout
-            </button>
+        <div className="features-grid">
+          <div className="feature-card glass-panel">
+            <span className="feature-icon">🚀</span>
+            <h3>Accelerated Growth</h3>
+            <p className="text-dim">Fast-track your career with focused, high-impact learning modules.</p>
           </div>
-        )}
-
-        {/* Browse without login */}
-        <button
-          onClick={() => navigate("/dashboard")}
-          style={{
-            marginTop: "1rem",
-            padding: "0.5rem 1rem",
-            background: "transparent",
-            border: "1px solid #fff",
-            color: "#fff",
-            borderRadius: "5px",
-            cursor: "pointer",
-          }}
-        >
-          Browse Courses
-        </button>
-      </div>
-
-      {/* COURSE PREVIEW */}
-      <div style={{ padding: "2rem", background: "#f5f5f5" }}>
-        <h2>Featured Courses</h2>
-
-        {previewCourses.map((course) => (
-          <div
-            key={course.id}
-            style={{
-              margin: "1rem 0",
-              padding: "1rem",
-              background: "#fff",
-              borderRadius: "8px",
-            }}
-          >
-            <h3>{course.title}</h3>
-            <p>{course.description}</p>
+          <div className="feature-card glass-panel">
+            <span className="feature-icon">💻</span>
+            <h3>Practical Skills</h3>
+            <p className="text-dim">Build real-world projects that matter. Stop watching, start coding.</p>
           </div>
-        ))}
-      </div>
+          <div className="feature-card glass-panel">
+            <span className="feature-icon">🌐</span>
+            <h3>Global Network</h3>
+            <p className="text-dim">Join thousands of students and mentors worldwide.</p>
+          </div>
+        </div>
+      </main>
     </div>
   );
 };
