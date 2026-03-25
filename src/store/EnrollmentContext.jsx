@@ -6,28 +6,37 @@ const EnrollmentContext = createContext();
 export const EnrollmentProvider = ({ children }) => {
   const { user } = useAuth();
 
-  const [enrolledCourses, setEnrolledCourses] = useState(() => {
-    return JSON.parse(localStorage.getItem("courses")) || [];
+  const [enrolledCoursesData, setEnrolledCoursesData] = useState(() => {
+    return JSON.parse(localStorage.getItem("enrolled_users")) || {};
   });
 
   const [progress, setProgress] = useState(() => {
     return JSON.parse(localStorage.getItem("progress")) || {};
   });
 
-  const enrollCourse = (course) => {
-    setEnrolledCourses((prev) => {
-      if (prev.find((c) => c.id === course.id)) return prev;
+  // Derived state for the currently logged-in user
+  const enrolledCourses = user ? (enrolledCoursesData[user.username] || []) : [];
 
-      const updated = [...prev, course];
-      localStorage.setItem("courses", JSON.stringify(updated));
+  const enrollCourse = (course) => {
+    if (!user) return;
+    setEnrolledCoursesData((prev) => {
+      const userCourses = prev[user.username] || [];
+      if (userCourses.find((c) => c.id === course.id)) return prev;
+
+      const updatedUserCourses = [...userCourses, course];
+      const updated = { ...prev, [user.username]: updatedUserCourses };
+      localStorage.setItem("enrolled_users", JSON.stringify(updated));
       return updated;
     });
   };
 
   const unenrollCourse = (courseId) => {
-    setEnrolledCourses((prev) => {
-      const updated = prev.filter((c) => c.id !== courseId);
-      localStorage.setItem("courses", JSON.stringify(updated));
+    if (!user) return;
+    setEnrolledCoursesData((prev) => {
+      const userCourses = prev[user.username] || [];
+      const updatedUserCourses = userCourses.filter((c) => c.id !== courseId);
+      const updated = { ...prev, [user.username]: updatedUserCourses };
+      localStorage.setItem("enrolled_users", JSON.stringify(updated));
       return updated;
     });
   };
