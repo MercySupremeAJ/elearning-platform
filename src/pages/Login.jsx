@@ -11,7 +11,7 @@ const Login = () => {
     e.preventDefault();
     if (!username) return;
 
-    login({ username });
+    login(username);
     navigate("/dashboard");
   };
 
