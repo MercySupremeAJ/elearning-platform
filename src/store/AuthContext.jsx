@@ -9,7 +9,8 @@ export const AuthProvider = ({ children }) => {
   });
 
   const login = (username, email) => {
-    const newUser = { username, email };
+    const trimmedUsername = username.trim();
+    const newUser = { username: trimmedUsername, email };
     setUser(newUser);
     localStorage.setItem("user", JSON.stringify(newUser));
   };
