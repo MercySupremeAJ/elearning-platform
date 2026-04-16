@@ -34,6 +34,7 @@ const LessonPlayer = () => {
   // View State Manager
   const [activeTab, setActiveTab] = useState("lesson"); // 'lesson' | 'quiz' | 'certificate'
   const [quizScore, setQuizScore] = useState(null);
+  const [selectedAnswers, setSelectedAnswers] = useState({});
   const [currentLesson, setCurrentLesson] = useState(courseLessons[0] || null);
 
   // Redirect if not enrolled
@@ -124,17 +125,47 @@ const LessonPlayer = () => {
             <p className="text-dim" style={{ marginBottom: '3rem', textAlign: 'center', fontSize: '1.1rem' }}>Test your mastery of {courseDetails.title} with these core concepts.</p>
             
             <div className="quiz-questions">
-              {(quizzes[courseId] || quizzes["default"]).map((qObj, idx) => (
+              {(quizzes[courseId] || []).map((qObj, idx) => (
                 <div key={idx} style={{ marginBottom: '2rem', paddingBottom: '2rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
                   <h4 style={{ fontSize: '1.2rem', marginBottom: '1rem', color: 'var(--accent)' }}>Question {idx + 1}</h4>
                   <p style={{ marginBottom: '1rem', fontSize: '1.05rem', lineHeight: 1.5 }}>
                     {qObj.q}
                   </p>
-                  {qObj.options.map((opt, optIdx) => (
-                    <label key={optIdx} style={{ display: 'block', marginBottom: '0.5rem', padding: '1rem', background: 'rgba(0,0,0,0.2)', borderRadius: '8px', cursor: 'pointer', transition: 'background 0.2s', border: '1px solid transparent' }}>
-                      <input type="radio" name={`q${idx}`} value={optIdx} style={{ marginRight: '1rem' }} /> {opt}
-                    </label>
-                  ))}
+                  {qObj.options.map((opt, optIdx) => {
+                    const isGraded = quizScore !== null;
+                    const isSelected = selectedAnswers[idx] === optIdx;
+                    const isCorrect = optIdx === qObj.a;
+                    let optStyle = { display: 'block', marginBottom: '0.5rem', padding: '1rem', background: 'rgba(0,0,0,0.2)', borderRadius: '8px', cursor: isGraded ? 'default' : 'pointer', transition: 'background 0.2s', border: '2px solid transparent' };
+                    
+                    if (isGraded) {
+                      if (isCorrect) {
+                        optStyle.border = '2px solid #10b981';
+                        optStyle.background = 'rgba(16, 185, 129, 0.15)';
+                      } else if (isSelected && !isCorrect) {
+                        optStyle.border = '2px solid #ef4444';
+                        optStyle.background = 'rgba(239, 68, 68, 0.15)';
+                      }
+                    } else if (isSelected) {
+                      optStyle.border = '2px solid var(--accent)';
+                      optStyle.background = 'rgba(59, 130, 246, 0.15)';
+                    }
+
+                    return (
+                      <label key={optIdx} style={optStyle}>
+                        <input 
+                          type="radio" 
+                          name={`q${idx}`} 
+                          value={optIdx} 
+                          checked={isSelected}
+                          disabled={isGraded}
+                          onChange={() => setSelectedAnswers(prev => ({ ...prev, [idx]: optIdx }))}
+                          style={{ marginRight: '1rem' }} 
+                        /> {opt}
+                        {isGraded && isCorrect && <span style={{ float: 'right', color: '#10b981', fontWeight: 700 }}>✓ Correct</span>}
+                        {isGraded && isSelected && !isCorrect && <span style={{ float: 'right', color: '#ef4444', fontWeight: 700 }}>✗ Wrong</span>}
+                      </label>
+                    );
+                  })}
                 </div>
               ))}
             </div>
@@ -144,14 +175,39 @@ const LessonPlayer = () => {
                 <button 
                   className="btn btn-primary" 
                   style={{ padding: '1.5rem 4rem', fontSize: '1.2rem', background: 'var(--gradient-primary)' }}
-                  onClick={() => setQuizScore(100)}
+                  onClick={() => {
+                    const questions = quizzes[courseId] || [];
+                    let correct = 0;
+                    questions.forEach((qObj, idx) => {
+                      if (selectedAnswers[idx] === qObj.a) correct++;
+                    });
+                    const score = questions.length > 0 ? Math.round((correct / questions.length) * 100) : 0;
+                    setQuizScore(score);
+                  }}
                 >
                   Grade My Assessment
                 </button>
               ) : (
-                <div style={{ background: 'rgba(16, 185, 129, 0.1)', padding: '2rem', borderRadius: '12px', border: '1px solid var(--success)' }}>
-                  <h3 style={{ color: 'var(--success)', fontSize: '2rem', marginBottom: '0.5rem' }}>Assessment Passed!</h3>
-                  <p>Score: {quizScore}% — You have demonstrated flawless mastery.</p>
+                <div>
+                  <div style={{ 
+                    background: quizScore >= 70 ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)', 
+                    padding: '2rem', borderRadius: '12px', 
+                    border: `1px solid ${quizScore >= 70 ? 'var(--success)' : 'var(--danger)'}` 
+                  }}>
+                    <h3 style={{ color: quizScore >= 70 ? 'var(--success)' : 'var(--danger)', fontSize: '2rem', marginBottom: '0.5rem' }}>
+                      {quizScore >= 70 ? 'Assessment Passed!' : 'Assessment Failed'}
+                    </h3>
+                    <p>Score: {quizScore}% — {quizScore >= 70 ? 'Great job! You demonstrated strong mastery.' : 'You need 70% or higher to pass. Review the material and try again.'}</p>
+                  </div>
+                  {quizScore < 70 && (
+                    <button 
+                      className="btn btn-outline" 
+                      style={{ marginTop: '1.5rem', padding: '1rem 3rem', fontSize: '1.1rem' }}
+                      onClick={() => { setQuizScore(null); setSelectedAnswers({}); }}
+                    >
+                      🔄 Retake Assessment
+                    </button>
+                  )}
                 </div>
               )}
             </div>
