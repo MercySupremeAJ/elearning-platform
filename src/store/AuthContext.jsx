@@ -8,9 +8,19 @@ export const AuthProvider = ({ children }) => {
     return JSON.parse(localStorage.getItem("user")) || null;
   });
 
-  const login = (username, email) => {
+  const login = (username, email, phone = "Not provided", avatar = "") => {
     const trimmedUsername = username.trim();
-    const newUser = { username: trimmedUsername, email };
+    // Generate a beautiful dynamic avatar based on their name if no image is uploaded
+    const defaultAvatar = avatar || `https://ui-avatars.com/api/?name=${trimmedUsername}&background=random`;
+    
+    const newUser = { 
+        username: trimmedUsername, 
+        email: email || `${trimmedUsername}@supremium.edu`,
+        phone,
+        avatar: defaultAvatar,
+        joinDate: new Date().toLocaleDateString()
+    };
+    
     setUser(newUser);
     localStorage.setItem("user", JSON.stringify(newUser));
   };

@@ -43,7 +43,13 @@ const CourseCard = ({ course }) => {
           <button
             className="btn btn-primary"
             style={{ width: "100%" }}
-            onClick={() => enrollCourse(course)}
+            onClick={() => {
+              if (!user) {
+                navigate("/signup");
+                return;
+              }
+              enrollCourse(course);
+            }}
           >
             Enroll Now
           </button>

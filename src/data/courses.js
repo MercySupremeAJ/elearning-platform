@@ -1,33 +1,144 @@
 const courses = [
-  // Web Development
-  { id: 1, title: "HTML & CSS Fundamentals", category: "Web Development", description: "Build responsive web pages from scratch" },
-  { id: 2, title: "JavaScript Essentials", category: "Web Development", description: "Learn core JavaScript concepts" },
-  { id: 3, title: "React for Beginners", category: "Web Development", description: "Introduction to React and components" },
-  { id: 4, title: "Advanced React", category: "Web Development", description: "Hooks, Context API, and performance" },
-
-  // Data Science
-  { id: 5, title: "Python for Data Science", category: "Data Science", description: "Learn Python for analysis" },
-  { id: 6, title: "Data Analysis with Pandas", category: "Data Science", description: "Analyze datasets efficiently" },
-  { id: 7, title: "Data Visualization", category: "Data Science", description: "Create charts using Matplotlib & Seaborn" },
-  { id: 8, title: "Statistics for Data Science", category: "Data Science", description: "Understand statistical concepts" },
-
-  // AI / Machine Learning
-  { id: 9, title: "Machine Learning Basics", category: "AI", description: "Intro to ML algorithms" },
-  { id: 10, title: "Deep Learning Fundamentals", category: "AI", description: "Neural networks and backpropagation" },
-  { id: 11, title: "Computer Vision", category: "AI", description: "Image processing and CNNs" },
-  { id: 12, title: "Natural Language Processing", category: "AI", description: "Text analysis and NLP models" },
-
-  // Engineering
-  { id: 13, title: "Engineering Mathematics", category: "Engineering", description: "Core math for engineers" },
-  { id: 14, title: "Signal Processing", category: "Engineering", description: "Understand signals and systems" },
-  { id: 15, title: "Control Systems", category: "Engineering", description: "Learn feedback systems" },
-  { id: 16, title: "Embedded Systems", category: "Engineering", description: "Microcontrollers and hardware programming" },
-
-  // Programming Fundamentals
-  { id: 17, title: "Introduction to Programming", category: "Programming", description: "Learn programming basics" },
-  { id: 18, title: "Object-Oriented Programming", category: "Programming", description: "Classes, objects, and design" },
-  { id: 19, title: "Data Structures & Algorithms", category: "Programming", description: "Efficient problem solving" },
-  { id: 20, title: "Version Control with Git", category: "Programming", description: "Learn Git and GitHub workflows" },
+  {
+    id: 1,
+    title: "Advanced Mathematics for Data Science",
+    description: "Master the calculus and linear algebra required to deeply understand machine learning algorithms.",
+    category: "Foundations",
+    duration: "4 Weeks",
+  },
+  {
+    id: 2,
+    title: "Statistics & Probability",
+    description: "Learn inferential statistics, distributions, and AB testing vital for data analysis.",
+    category: "Foundations",
+    duration: "3 Weeks",
+  },
+  {
+    id: 3,
+    title: "Introduction to Python",
+    description: "The absolute basics of Python programming, the lingua franca of Data Science.",
+    category: "Programming",
+    duration: "2 Weeks",
+  },
+  {
+    id: 4,
+    title: "Python for Data Science",
+    description: "Transition your Python skills into scientific computing with NumPy and SciPy.",
+    category: "Programming",
+    duration: "4 Weeks",
+  },
+  {
+    id: 5,
+    title: "Data Analysis with Pandas",
+    description: "Learn how to ingest, clean, and manipulate massive datasets using Pandas.",
+    category: "Data Engineering",
+    duration: "3 Weeks",
+  },
+  {
+    id: 6,
+    title: "Advanced Data Visualization",
+    description: "Storytelling with data using Matplotlib, Seaborn, and interactive Plotly graphs.",
+    category: "Data Engineering",
+    duration: "2 Weeks",
+  },
+  {
+    id: 7,
+    title: "SQL & Databases for Data Science",
+    description: "Query databases natively, extract complex relationships, and manage data pipelines.",
+    category: "Data Engineering",
+    duration: "3 Weeks",
+  },
+  {
+    id: 8,
+    title: "Big Data Fundamentals",
+    description: "An introduction to working with terabytes of data using Apache Spark and Hadoop.",
+    category: "Data Engineering",
+    duration: "4 Weeks",
+  },
+  {
+    id: 9,
+    title: "Feature Engineering",
+    description: "Learn how to preprocess data, handle missing values, and select features for modeling.",
+    category: "Machine Learning",
+    duration: "3 Weeks",
+  },
+  {
+    id: 10,
+    title: "Machine Learning Basics",
+    description: "A foundational dive into statistical modeling, regression, and model evaluation metrics.",
+    category: "Machine Learning",
+    duration: "2 Weeks",
+  },
+  {
+    id: 11,
+    title: "Supervised Learning",
+    description: "Master Decision Trees, Random Forests, Support Vector Machines, and more.",
+    category: "Machine Learning",
+    duration: "4 Weeks",
+  },
+  {
+    id: 12,
+    title: "Unsupervised Learning & Clustering",
+    description: "Discover hidden patterns in unlabeled data using K-Means, PCA, and Hierarchy.",
+    category: "Machine Learning",
+    duration: "3 Weeks",
+  },
+  {
+    id: 13,
+    title: "Deep Learning Fundamentals",
+    description: "Build neural networks from scratch using TensorFlow and PyTorch frameworks.",
+    category: "Artificial Intelligence",
+    duration: "5 Weeks",
+  },
+  {
+    id: 14,
+    title: "Natural Language Processing (NLP)",
+    description: "Teach models to understand, parse, and generate human text using Transformers.",
+    category: "Artificial Intelligence",
+    duration: "4 Weeks",
+  },
+  {
+    id: 15,
+    title: "Computer Vision Basics",
+    description: "Process imagery and detect objects leveraging Convolutional Neural Networks (CNNs).",
+    category: "Artificial Intelligence",
+    duration: "4 Weeks",
+  },
+  {
+    id: 16,
+    title: "Time Series Analysis & Forecasting",
+    description: "Predict stock prices, weather, and sales using ARIMA, Prophet, and LSTMs.",
+    category: "Advanced Algorithms",
+    duration: "3 Weeks",
+  },
+  {
+    id: 17,
+    title: "Tools & Platforms for Data Science",
+    description: "Master Jupyter Notebooks, Google Colab, and utilizing Git for Machine Learning.",
+    category: "MLOps",
+    duration: "2 Weeks",
+  },
+  {
+    id: 18,
+    title: "MLOps: Model Deployment",
+    description: "Take your models out of Jupyter and deploy them to production using Docker and APIs.",
+    category: "MLOps",
+    duration: "3 Weeks",
+  },
+  {
+    id: 19,
+    title: "Ethics in AI & Data Privacy",
+    description: "Navigate algorithmic bias, data security, and ethical considerations in Data Science.",
+    category: "Advanced Concepts",
+    duration: "1 Week",
+  },
+  {
+    id: 20,
+    title: "Data Science Capstone Project",
+    description: "Build an end-to-end industry scale project from data ingestion to model deployment.",
+    category: "Advanced Concepts",
+    duration: "6 Weeks",
+  },
 ];
 
 export default courses;

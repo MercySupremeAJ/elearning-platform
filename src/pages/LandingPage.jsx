@@ -1,19 +1,29 @@
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 
 const LandingPage = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   return (
     <div className="container" style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <header className="nav-header" style={{ marginTop: "2rem" }}>
         <div className="nav-brand">Supremium Learning</div>
         <div className="nav-actions">
-          <button className="btn btn-outline" onClick={() => navigate("/login")}>
-            Log In
-          </button>
-          <button className="btn btn-primary" onClick={() => navigate("/signup")}>
-            Sign Up
-          </button>
+          {user ? (
+            <button className="btn btn-primary" onClick={() => navigate("/dashboard")}>
+              Go to Dashboard ({user.username})
+            </button>
+          ) : (
+            <>
+              <button className="btn btn-outline" onClick={() => navigate("/login")}>
+                Log In
+              </button>
+              <button className="btn btn-primary" onClick={() => navigate("/signup")}>
+                Sign Up
+              </button>
+            </>
+          )}
         </div>
       </header>
 

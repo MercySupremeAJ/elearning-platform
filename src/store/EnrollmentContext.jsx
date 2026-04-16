@@ -1,5 +1,6 @@
 import { createContext, useState, useContext } from "react";
 import { useAuth } from "../hooks/useAuth";
+import courses from "../data/courses.js";
 
 const EnrollmentContext = createContext();
 
@@ -11,11 +12,20 @@ export const EnrollmentProvider = ({ children }) => {
   });
 
   const [progress, setProgress] = useState(() => {
-    return JSON.parse(localStorage.getItem("progress")) || {};
+    localStorage.removeItem("progress"); // Force wipe legacy primary key collision
+    return {};
   });
 
-  // Derived state for the currently logged-in user
-  const enrolledCourses = user ? (enrolledCoursesData[user.username] || []) : [];
+  const [answers, setAnswers] = useState(() => {
+    localStorage.removeItem("answers"); // Force wipe legacy quiz schema
+    return {};
+  });
+
+  // Derived state: Map strictly to live DB courses to purge legacy local storage bugs
+  const rawEnrolled = user ? (enrolledCoursesData[user.username] || []) : [];
+  const enrolledCourses = rawEnrolled
+    .map(saved => courses.find(c => c.id === saved.id))
+    .filter(Boolean);
 
   const enrollCourse = (course) => {
     if (!user) return;
@@ -41,25 +51,46 @@ export const EnrollmentProvider = ({ children }) => {
     });
   };
 
-  const toggleLessonComplete = (courseId, lessonId) => {
+  const toggleLessonComplete = (courseId, lessonId, quizAnswer = "") => {
     if (!user) return;
 
     setProgress((prev) => {
       const userProgress = prev[user.username] || {};
       const courseProgress = userProgress[courseId] || [];
 
-      const updatedCourse = courseProgress.includes(lessonId)
-        ? courseProgress.filter((id) => id !== lessonId)
-        : [...courseProgress, lessonId];
+      // If it exists, remove it (undo)
+      if (courseProgress.includes(lessonId)) {
+        const updatedCourse = courseProgress.filter((id) => id !== lessonId);
+        const updated = { ...prev, [user.username]: { ...userProgress, [courseId]: updatedCourse } };
+        localStorage.setItem("progress", JSON.stringify(updated));
+        return updated;
+      }
 
-      const updated = {
-        ...prev,
-        [user.username]: {
-          ...userProgress,
-          [courseId]: updatedCourse,
-        },
-      };
+      // If it doesn't exist, add it and save the answer
+      const updatedCourse = [...courseProgress, lessonId];
+      const updated = { ...prev, [user.username]: { ...userProgress, [courseId]: updatedCourse } };
+      localStorage.setItem("progress", JSON.stringify(updated));
+      
+      // Save Answer
+      if (quizAnswer) {
+        setAnswers(prevAns => {
+          const userAns = prevAns[user.username] || {};
+          const courseAns = userAns[courseId] || {};
+          const updatedAns = { ...prevAns, [user.username]: { ...userAns, [courseId]: { ...courseAns, [lessonId]: quizAnswer } } };
+          localStorage.setItem("answers", JSON.stringify(updatedAns));
+          return updatedAns;
+        });
+      }
 
+      return updated;
+    });
+  };
+
+  const resetCourseProgress = (courseId) => {
+    if (!user) return;
+    setProgress((prev) => {
+      const userProgress = prev[user.username] || {};
+      const updated = { ...prev, [user.username]: { ...userProgress, [courseId]: [] } };
       localStorage.setItem("progress", JSON.stringify(updated));
       return updated;
     });
@@ -73,6 +104,8 @@ export const EnrollmentProvider = ({ children }) => {
         unenrollCourse,
         progress,
         toggleLessonComplete,
+        answers,
+        resetCourseProgress
       }}
     >
       {children}

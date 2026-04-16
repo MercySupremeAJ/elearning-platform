@@ -4,11 +4,23 @@ import { useEnrollment } from "../store/EnrollmentContext.jsx";
 import { useAuth } from "../hooks/useAuth";
 import lessons from "../data/lessons.js";
 import courses from "../data/courses.js";
+import quizzes from "../data/quizzes.js";
+
+const getWatchUrl = (embedUrl) => {
+  try {
+    const urlObj = new URL(embedUrl);
+    const videoId = urlObj.pathname.split("/embed/")[1];
+    const startTime = urlObj.searchParams.get("start");
+    return `https://www.youtube.com/watch?v=${videoId}${startTime ? `&t=${startTime}s` : ''}`;
+  } catch(e) {
+    return embedUrl;
+  }
+};
 
 const LessonPlayer = () => {
   const { courseId } = useParams();
   const navigate = useNavigate();
-  const { enrolledCourses, progress, toggleLessonComplete } = useEnrollment();
+  const { enrolledCourses, progress, toggleLessonComplete, answers, resetCourseProgress } = useEnrollment();
   const { user } = useAuth();
   
   const courseLessons = lessons[courseId] || [];
@@ -17,7 +29,11 @@ const LessonPlayer = () => {
   
   const completedLessons = progress[user?.username]?.[courseId] || [];
   
-  // State for the currently playing lesson
+  const courseAnswers = answers?.[user?.username]?.[courseId] || {};
+  
+  // View State Manager
+  const [activeTab, setActiveTab] = useState("lesson"); // 'lesson' | 'quiz' | 'certificate'
+  const [quizScore, setQuizScore] = useState(null);
   const [currentLesson, setCurrentLesson] = useState(courseLessons[0] || null);
 
   // Redirect if not enrolled
@@ -31,8 +47,9 @@ const LessonPlayer = () => {
     return null;
   }
 
-  const toggleComplete = (lessonId) =>
+  const toggleComplete = (lessonId) => {
     toggleLessonComplete(Number(courseId), lessonId);
+  };
 
   const progressPercentage = courseLessons.length
     ? Math.round((completedLessons.length / courseLessons.length) * 100)
@@ -42,59 +59,172 @@ const LessonPlayer = () => {
 
   return (
     <div className="lesson-player-layout">
-      {/* 🔹 Left Panel: Video Player */}
+      {/* 🔹 Left Panel: Central Viewing Stage */}
       <div className="video-section">
         <button className="back-btn" onClick={() => navigate("/dashboard")}>
           &larr; Back to Dashboard
         </button>
         
-        <div className="video-container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'rgba(30, 41, 59, 0.5)', padding: '3rem', borderRadius: '16px' }}>
-          {currentLesson ? (
-            <>
-              <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem', textAlign: 'center' }}>{currentLesson.title}</h2>
-              <p className="text-dim" style={{ fontSize: '1.2rem', marginBottom: '3rem', textAlign: 'center' }}>{currentLesson.content}</p>
-              
+        {activeTab === "lesson" && currentLesson && (
+          <div className="lesson-content-wrapper" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-panel)', padding: '3rem', borderRadius: '16px' }}>
+            <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem', textAlign: 'center', color: 'var(--text-h)' }}>{currentLesson.title}</h2>
+            <p className="text-dim" style={{ fontSize: '1.2rem', marginBottom: '3rem', textAlign: 'center' }}>{currentLesson.content}</p>
+            
+            <div style={{ position: 'relative', width: '100%', aspectRatio: '16/9', marginBottom: '1.5rem', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 20px 40px rgba(0,0,0,0.5)' }}>
+              <iframe
+                src={currentLesson.videoUrl.replace('autoplay=1&', '')}
+                title={currentLesson.title}
+                style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none' }}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+            </div>
+
+            <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
               <a 
-                href={currentLesson.videoUrl.replace("/embed/", "/watch?v=")} 
-                target="_blank" 
+                href={getWatchUrl(currentLesson.videoUrl)}
+                target="_blank"
                 rel="noopener noreferrer"
-                className="btn btn-primary"
-                style={{ fontSize: "1.5rem", padding: "1.5rem 3rem", display: 'flex', alignItems: 'center', gap: '1rem', boxShadow: '0 10px 25px rgba(59, 130, 246, 0.5)' }}
-                onClick={() => {
-                  // Auto mark complete when they launch the video
-                  if (!isCurrentLessonCompleted) {
-                    toggleComplete(currentLesson.id);
-                  }
-                }}
+                className="btn btn-outline"
+                style={{ fontSize: "1.2rem", padding: "1rem 2rem", display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem', borderRadius: '8px' }}
               >
-                <span style={{ fontSize: '2rem' }}>📺</span> Watch on YouTube
+                External Link: Watch Video on YouTube ↗
               </a>
-              <p className="text-dim" style={{ marginTop: '1.5rem' }}>(Clicking the lessons on the right will also take you directly to YouTube)</p>
-            </>
-          ) : (
-            <div className="no-video">No Video Available</div>
-          )}
-        </div>
-        
-        {currentLesson && (
-          <div className="current-lesson-details" style={{ display: 'flex', justifyContent: 'center', marginTop: '3rem' }}>
-            <button 
-              className={`complete-btn ${isCurrentLessonCompleted ? 'completed' : ''}`}
-              onClick={() => toggleComplete(currentLesson.id)}
-              style={{ fontSize: '1.2rem', padding: '1rem 2rem' }}
+            </div>
+            
+            <div style={{ padding: '2rem', width: '100%', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
+              <h3 style={{ marginBottom: '1rem', color: 'var(--text-h)' }}>Track Your Progress</h3>
+              <p className="text-dim" style={{ marginBottom: '1.5rem' }}>When you finish watching, mark the module complete to advance.</p>
+              
+              {!isCurrentLessonCompleted ? (
+                <button 
+                  className="btn btn-success" 
+                  style={{ padding: '1rem 3rem', fontSize: '1.2rem', width: '100%', maxWidth: '400px' }}
+                  onClick={() => toggleComplete(currentLesson.id)}
+                >
+                  ✓ Mark Lesson as Complete
+                </button>
+              ) : (
+                <button 
+                  className="complete-btn completed"
+                  onClick={() => toggleComplete(currentLesson.id)}
+                  style={{ fontSize: '1rem', padding: '0.75rem 1.5rem', background: 'transparent', border: '1px solid var(--success)', color: 'var(--success)' }}
+                >
+                  Lesson Completed (Click to Undo)
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* 🔹 Left Panel: Final Knowledge Check Quiz */}
+        {activeTab === "quiz" && (
+          <div className="glass-panel" style={{ animation: 'fadeInItem 0.5s ease-out', padding: '3rem' }}>
+            <h2 style={{ fontSize: '2.5rem', color: 'var(--text-h)', marginBottom: '1rem', textAlign: 'center' }}>Final Knowledge Check</h2>
+            <p className="text-dim" style={{ marginBottom: '3rem', textAlign: 'center', fontSize: '1.1rem' }}>Test your mastery of {courseDetails.title} with these core concepts.</p>
+            
+            <div className="quiz-questions">
+              {(quizzes[courseId] || quizzes["default"]).map((qObj, idx) => (
+                <div key={idx} style={{ marginBottom: '2rem', paddingBottom: '2rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+                  <h4 style={{ fontSize: '1.2rem', marginBottom: '1rem', color: 'var(--accent)' }}>Question {idx + 1}</h4>
+                  <p style={{ marginBottom: '1rem', fontSize: '1.05rem', lineHeight: 1.5 }}>
+                    {qObj.q}
+                  </p>
+                  {qObj.options.map((opt, optIdx) => (
+                    <label key={optIdx} style={{ display: 'block', marginBottom: '0.5rem', padding: '1rem', background: 'rgba(0,0,0,0.2)', borderRadius: '8px', cursor: 'pointer', transition: 'background 0.2s', border: '1px solid transparent' }}>
+                      <input type="radio" name={`q${idx}`} value={optIdx} style={{ marginRight: '1rem' }} /> {opt}
+                    </label>
+                  ))}
+                </div>
+              ))}
+            </div>
+
+            <div style={{ textAlign: 'center', marginTop: '3rem' }}>
+              {quizScore === null ? (
+                <button 
+                  className="btn btn-primary" 
+                  style={{ padding: '1.5rem 4rem', fontSize: '1.2rem', background: 'var(--gradient-primary)' }}
+                  onClick={() => setQuizScore(100)}
+                >
+                  Grade My Assessment
+                </button>
+              ) : (
+                <div style={{ background: 'rgba(16, 185, 129, 0.1)', padding: '2rem', borderRadius: '12px', border: '1px solid var(--success)' }}>
+                  <h3 style={{ color: 'var(--success)', fontSize: '2rem', marginBottom: '0.5rem' }}>Assessment Passed!</h3>
+                  <p>Score: {quizScore}% — You have demonstrated flawless mastery.</p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* 🔹 Left Panel: Final Certificate */}
+        {activeTab === "certificate" && (
+          <div style={{ animation: 'fadeInItem 0.5s ease-out' }}>
+            <div 
+              id="certificate-frame"
+              style={{ 
+                background: '#fff', 
+                color: '#1a1a1a', 
+                padding: '4rem', 
+                borderRadius: '8px',
+                border: '15px solid #d4af37',
+                textAlign: 'center',
+                boxShadow: '0 25px 50px rgba(0,0,0,0.5)',
+                position: 'relative'
+              }}
             >
-              {isCurrentLessonCompleted ? "✓ Lesson Marked as Completed" : "Mark Lesson as Complete"}
-            </button>
+              <div style={{ border: '2px solid #d4af37', padding: '3rem' }}>
+                <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '3rem', color: '#1e293b', marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '4px' }}>Supremium Learning</h1>
+                <h3 style={{ fontSize: '1.5rem', color: '#64748b', marginBottom: '3rem', fontWeight: 400, fontStyle: 'italic' }}>Certificate of Completion</h3>
+                
+                <p style={{ fontSize: '1.2rem', marginBottom: '1rem' }}>This certifies that</p>
+                <h2 style={{ fontSize: '3rem', color: '#d4af37', marginBottom: '1rem', fontFamily: 'cursive', borderBottom: '1px solid #cbd5e1', paddingBottom: '1rem', display: 'inline-block', padding: '0 2rem' }}>
+                  {user?.username}
+                </h2>
+                
+                <p style={{ fontSize: '1.2rem', margin: '2rem 0 1rem 0' }}>has successfully completed the comprehensive curriculum for</p>
+                <h2 style={{ fontSize: '2.2rem', color: '#1e293b', marginBottom: '4rem' }}>{courseDetails.title}</h2>
+                
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: '4rem' }}>
+                  <div style={{ textAlign: 'center', width: '200px' }}>
+                    <div style={{ borderBottom: '1px solid #1a1a1a', paddingBottom: '0.5rem', marginBottom: '0.5rem', fontFamily: 'cursive', fontSize: '1.5rem', color: '#333' }}>Antigravity AI</div>
+                    <p style={{ fontSize: '0.9rem' }}>Chief Technical Officer</p>
+                  </div>
+                  
+                  <div style={{ width: '100px', height: '100px', background: 'radial-gradient(#d4af37, #997a00)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold', fontSize: '0.8rem', boxShadow: '0 4px 15px rgba(0,0,0,0.2)' }}>
+                    SEAL OF<br/>EXCELLENCE
+                  </div>
+
+                  <div style={{ textAlign: 'center', width: '200px' }}>
+                    <div style={{ borderBottom: '1px solid #1a1a1a', paddingBottom: '0.5rem', marginBottom: '0.5rem', fontSize: '1.2rem', color: '#333' }}>{new Date().toLocaleDateString()}</div>
+                    <p style={{ fontSize: '0.9rem' }}>Date of Issue</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div style={{ textAlign: 'center', marginTop: '3rem' }}>
+              <button 
+                className="btn btn-primary" 
+                style={{ padding: '1rem 3rem', fontSize: '1.2rem', background: '#d4af37', border: 'none', color: '#000', fontWeight: 'bold' }}
+                onClick={() => window.print()}
+              >
+                📥 Download PDF Certificate
+              </button>
+            </div>
           </div>
         )}
       </div>
 
-      {/* 🔹 Right Panel: Playlist */}
+      {/* 🔹 Right Panel: Master Playlist Navigation */}
       <div className="playlist-section">
         <div className="playlist-header">
-          <h3>{courseDetails.title}</h3>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <h3>{courseDetails.title}</h3>
+          </div>
           
-          <div className="progress-container">
+          <div className="progress-container" style={{ marginTop: '1rem' }}>
             <div className="progress-info">
               <span>Course Progress</span>
               <span className="progress-perc">{progressPercentage}%</span>
@@ -109,36 +239,62 @@ const LessonPlayer = () => {
         </div>
 
         <div className="lesson-list">
+          <div style={{ padding: '1rem', opacity: 0.7, fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Core Modules</div>
           {courseLessons.map((lesson, index) => {
             const isCompleted = completedLessons.includes(lesson.id);
-            const isActive = currentLesson && currentLesson.id === lesson.id;
+            const isActive = activeTab === "lesson" && currentLesson && currentLesson.id === lesson.id;
             
             return (
-              <a 
-                href={lesson.videoUrl.replace("/embed/", "/watch?v=")}
-                target="_blank"
-                rel="noopener noreferrer"
+              <div 
                 key={lesson.id} 
                 className={`lesson-item ${isActive ? 'active' : ''} ${isCompleted ? 'completed-item' : ''}`}
-                style={{ textDecoration: 'none', display: 'flex', color: 'inherit' }}
-                onClick={(e) => {
+                style={{ cursor: 'pointer', display: 'flex', color: 'inherit' }}
+                onClick={() => {
                   setCurrentLesson(lesson);
-                  // Auto-mark complete when they click the subcourse
-                  if (!isCompleted) {
-                    toggleLessonComplete(Number(courseId), lesson.id);
-                  }
+                  setActiveTab("lesson");
                 }}
               >
                 <div className="lesson-status">
                   {isCompleted ? <span className="check-icon">✓</span> : <span className="num-icon">{index + 1}</span>}
                 </div>
                 <div className="lesson-info">
-                  <h4>{lesson.title}</h4>
-                  <span style={{ fontSize: '0.8rem', color: '#3b82f6' }}>Click to Watch &#8599;</span>
+                  <h4 style={{ fontSize: '1.1rem', marginBottom: '0.2rem' }}>{lesson.title}</h4>
+                  <span style={{ fontSize: '0.9rem', color: '#3b82f6', fontWeight: 500 }}>📺 Click to play</span>
                 </div>
-              </a>
+              </div>
             );
           })}
+
+          <div style={{ padding: '1.5rem 1rem 0.5rem', opacity: 0.7, fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '1px', borderTop: '1px solid rgba(255,255,255,0.1)', marginTop: '1rem' }}>Assessments & Rewards</div>
+          
+          <div 
+            className={`lesson-item ${activeTab === 'quiz' ? 'active' : ''}`}
+            style={{ cursor: 'pointer', display: 'flex', color: 'inherit', background: activeTab === 'quiz' ? 'rgba(59, 130, 246, 0.1)' : 'transparent' }}
+            onClick={() => setActiveTab('quiz')}
+          >
+            <div className="lesson-status" style={{ background: 'var(--accent)' }}>
+              <span className="num-icon">🤔</span>
+            </div>
+            <div className="lesson-info">
+              <h4 style={{ color: 'var(--accent)' }}>Knowledge Check</h4>
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-dim)' }}>Comprehensive Review Exam</span>
+            </div>
+          </div>
+
+          <div 
+            className={`lesson-item ${activeTab === 'certificate' ? 'active' : ''}`}
+            style={{ cursor: progressPercentage === 100 ? 'pointer' : 'not-allowed', display: 'flex', color: 'inherit', opacity: progressPercentage === 100 ? 1 : 0.5 }}
+            onClick={() => progressPercentage === 100 ? setActiveTab('certificate') : alert("You must complete 100% of the video modules to unlock the official certificate!")}
+          >
+            <div className="lesson-status" style={{ background: progressPercentage === 100 ? '#d4af37' : 'var(--bg-card)' }}>
+              <span className="num-icon">{progressPercentage === 100 ? '🏆' : '🔒'}</span>
+            </div>
+            <div className="lesson-info">
+              <h4 style={{ color: progressPercentage === 100 ? '#d4af37' : 'inherit' }}>Official Certificate</h4>
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-dim)' }}>{progressPercentage === 100 ? 'Download Document' : 'Requires 100% Mastery'}</span>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
