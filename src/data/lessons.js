@@ -1,26 +1,26 @@
 // ===== VERIFIED EMBEDDABLE YOUTUBE VIDEO IDS =====
 // Each video has been web-searched and confirmed from renowned publishers (FreeCodeCamp, 3Blue1Brown, etc.)
 
-const vid1 = "https://www.youtube.com/embed/fF8yD_3GgM8";  // Math: Linear Algebra for ML (FreeCodeCamp)
-const vid2 = "https://www.youtube.com/embed/xxpc-HPKN28";  // Stats: Statistics Full Course (FreeCodeCamp)
-const vid3 = "https://www.youtube.com/embed/rfscVS0vtbw";  // Python Intro (FreeCodeCamp - confirmed working)
-const vid4 = "https://www.youtube.com/embed/LHBE6Q9XlzI";  // Python for DS (FreeCodeCamp - confirmed working)
-const vid5 = "https://www.youtube.com/embed/vmEHCJofslg";  // Pandas Full Course (FreeCodeCamp - confirmed working)
-const vid6 = "https://www.youtube.com/embed/a9UrKTVEeZA";  // Data Viz: Matplotlib (FreeCodeCamp)
-const vid7 = "https://www.youtube.com/embed/HXV3zeQKqGY";  // SQL Full Course (FreeCodeCamp - confirmed working)
-const vid8 = "https://www.youtube.com/embed/_C8kWso4ne4";  // Big Data: Spark (FreeCodeCamp - confirmed working)
-const vid9 = "https://www.youtube.com/embed/JcI9x2Bw1W0";  // Feature Engineering: ML Full Course incl. preprocessing (FreeCodeCamp 2024)
-const vid10 = "https://www.youtube.com/embed/7eh4d_w0ODg"; // ML Basics: Machine Learning in 2024 (FreeCodeCamp)
-const vid11 = "https://www.youtube.com/embed/0B5eIE_1vpU"; // Supervised: Scikit-Learn Full Course (FreeCodeCamp)
-const vid12 = "https://www.youtube.com/embed/EItlUEPCIzM"; // Unsupervised: K-Means Clustering
-const vid13 = "https://www.youtube.com/embed/QDX-1M5Nj7s"; // Deep Learning: was Ethics video user said fits DL better
-const vid14 = "https://www.youtube.com/embed/XVv6mJpFOb0"; // NLP (FreeCodeCamp)
-const vid15 = "https://www.youtube.com/embed/IA3WxTTPXqQ"; // Computer Vision (FreeCodeCamp - confirmed working)
-const vid16 = "https://www.youtube.com/embed/e8Yw4alG16Q"; // Time Series (FreeCodeCamp)
-const vid17 = "https://www.youtube.com/embed/8JJ101D3knE"; // Tools & Git (FreeCodeCamp - confirmed working)
-const vid18 = "https://www.youtube.com/embed/pTFZFxd4hOI"; // MLOps: Docker/Deploy (FreeCodeCamp)
-const vid19 = "https://www.youtube.com/embed/FqS2W1-Vj6M"; // Ethics: AI Ethics Full Course (verified 2024)
-const vid20 = "https://www.youtube.com/embed/ua-CiDNNj30"; // Capstone (FreeCodeCamp - confirmed working)
+const vid1 = "https://www.youtube.com/embed/rSjt1E9WHaQ";  // Math: Linear Algebra for ML 
+const vid2 = "https://www.youtube.com/embed/xxpc-HPKN28";  // Stats: Statistics Full Course 
+const vid3 = "https://www.youtube.com/embed/rfscVS0vtbw";  // Python Intro 
+const vid4 = "https://www.youtube.com/embed/LHBE6Q9XlzI";  // Python for DS 
+const vid5 = "https://www.youtube.com/embed/vmEHCJofslg";  // Pandas Full Course 
+const vid6 = "https://www.youtube.com/embed/a9UrKTVEeZA";  // Data Viz: Matplotlib 
+const vid7 = "https://www.youtube.com/embed/HXV3zeQKqGY";  // SQL Full Course 
+const vid8 = "https://www.youtube.com/embed/_C8kWso4ne4";  // Big Data: Spark 
+const vid9 = "https://www.youtube.com/embed/GduT2ZCc26E";  // Feature Engineering: ML Full Course incl. preprocessing 
+const vid10 = "https://www.youtube.com/embed/i_LwzRVP7bg"; // ML Basics: Machine Learning for everyone 
+const vid11 = "https://www.youtube.com/embed/hDKCxebp88A"; // Supervised: Scikit-Learn Full Course
+const vid12 = "https://www.youtube.com/embed/hDKCxebp88A"; // Unsupervised: K-Means Clustering
+const vid13 = "https://www.youtube.com/embed/QDX-1M5Nj7s"; // Deep Learning:
+const vid14 = "https://www.youtube.com/embed/dIUTsFT2MeQ"; // NLP (FreeCodeCamp)
+const vid15 = "https://www.youtube.com/embed/IA3WxTTPXqQ"; // Computer Vision
+const vid16 = "https://www.youtube.com/embed/e8Yw4alG16Q"; // Time Series (edureka)
+const vid17 = "https://www.youtube.com/embed/8JJ101D3knE"; // Tools & Git 
+const vid18 = "https://www.youtube.com/embed/pTFZFxd4hOI"; // MLOps: Docker/Deploy
+const vid19 = "https://www.youtube.com/embed/qpp1G0iEL_c"; // Ethics: AI Ethics Full Course
+const vid20 = "https://www.youtube.com/embed/NpmFbWO6HPU"; // Capstone Project
 
 const lessons = {
   1: [{ id: 1, title: "Full Course Lecture", content: "Master calculus and linear algebra fundamentals required for Data Science and Machine Learning.", videoUrl: vid1 }],
