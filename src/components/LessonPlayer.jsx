@@ -244,7 +244,7 @@ const LessonPlayer = () => {
                 
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: '4rem' }}>
                   <div style={{ textAlign: 'center', width: '200px' }}>
-                    <div style={{ borderBottom: '1px solid #1a1a1a', paddingBottom: '0.5rem', marginBottom: '0.5rem', fontFamily: 'cursive', fontSize: '1.5rem', color: '#333' }}>Antigravity AI</div>
+                    <div style={{ borderBottom: '1px solid #1a1a1a', paddingBottom: '0.5rem', marginBottom: '0.5rem', fontFamily: 'cursive', fontSize: '1.5rem', color: '#333' }}>Supreme AI</div>
                     <p style={{ fontSize: '0.9rem' }}>Chief Technical Officer</p>
                   </div>
                   
